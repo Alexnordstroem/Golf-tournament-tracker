@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#173b32">
+    <title>Golf Tournament Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="masthead">
+        <div class="masthead__content">
+            <p class="eyebrow">YOUR SEASON, ON THE SCORECARD</p>
+            <h1>Golf Tournament Tracker</h1>
+            <p class="masthead__description">Keep every round in one place.</p>
+        </div>
+        <span class="masthead__mark" aria-hidden="true">GT</span>
+    </header>
+
+    <main class="tracker">
+        <section class="entry-section" aria-labelledby="entry-title">
+            <div class="section-heading">
+                <p class="eyebrow eyebrow--green">ADD A ROUND</p>
+                <h2 id="entry-title">Log a tournament</h2>
+                <p class="section-copy">Add the event name and your final score.</p>
+            </div>
+
+            <form class="entry-form" action="{{ url_for('add_tournament') }}" method="post">
+                <label class="field">
+                    <span>Tournament name</span>
+                    <input name="name" type="text" placeholder="e.g. Spring Invitational" maxlength="80" required>
+                </label>
+                <label class="field field--score">
+                    <span>Your score</span>
+                    <input name="score" type="number" min="1" max="300" step="1" placeholder="72" required>
+                </label>
+                <button class="submit-button" type="submit">
+                    <span aria-hidden="true">+</span> Add to tournament list
+                </button>
+            </form>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="messages" aria-live="polite">
+                        {% for category, message in messages %}
+                            <p class="message message--{{ category }}">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </section>
+
+        <section class="results-section" aria-labelledby="results-title">
+            <div class="results-heading">
+                <div>
+                    <p class="eyebrow eyebrow--green">ROUND HISTORY</p>
+                    <h2 id="results-title">Your tournaments</h2>
+                </div>
+                <div class="results-stats">
+                    <p class="entry-count"><strong>{{ tournaments|length }}</strong> saved</p>
+                    <p class="entry-count"><strong>{{ total_score }}</strong> total strokes</p>
+                </div>
+            </div>
+
+            {% if tournaments %}
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Tournament</th>
+                                <th scope="col">Date</th>
+                                <th scope="col" class="score-column">Score</th>
+                                <th scope="col"><span class="visually-hidden">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for index, tournament in tournaments %}
+                                <tr>
+                                    <td class="tournament-name">{{ tournament.name }}</td>
+                                    <td class="tournament-date">{{ tournament.date }}</td>
+                                    <td class="score-column"><span class="score-pill">{{ tournament.score }}</span></td>
+                                    <td class="action-column">
+                                        <form action="{{ url_for('delete_tournament', index=index) }}" method="post">
+                                            <button class="delete-button" type="submit">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <span class="empty-state__symbol" aria-hidden="true">01</span>
+                    <p class="empty-state__title">Your first round starts here.</p>
+                    <p>Your saved tournaments will show up in this list.</p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="page-footer">A little record of every round.</footer>
+</body>
+</html>
