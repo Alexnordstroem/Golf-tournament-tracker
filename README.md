@@ -72,4 +72,8 @@ This app uses Flask's built-in development server for local use. It is intended 
 
 ## Screenshot
 
-![Golf Tournament Tracker](screenshots/app.png)
+![Golf Tournament Tracker](screenshots/app.png
+
+## What I Learned
+
+Building this project helped me practice developing a web application using Python and Flask. I learned how to handle user input, validate tournament scores, and save tournament data in a JSON file. I also gained experience using HTML templates and CSS to create a user interface. This project helped me understand how the different parts of a web application work together, from processing user input to displaying saved information.
